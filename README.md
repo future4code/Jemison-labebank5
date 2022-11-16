@@ -45,6 +45,8 @@ Here are the technologies used in this project.
  
 ## Autores
  
-* **Roberta**
 * **Gabriel**
 * **Ricardo**
+* **Roberta**
+
+
