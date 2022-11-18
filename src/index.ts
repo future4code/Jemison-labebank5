@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { clientes, Extrato, Conta } from "./data";
+import { sign } from "crypto";
 
 const app = express();
 app.use(express.json());
@@ -10,6 +11,7 @@ app.post("/users", (req: Request, res: Response) => {
   try {
     const { nome, cpf, nascimento, saldo } = req.body;
     const [{ valor, descricao, data }] = req.body.extrato;
+
     if (!nome || !cpf || !nascimento) {
       res.statusCode = 404;
       throw new Error(
@@ -38,7 +40,19 @@ app.post("/users", (req: Request, res: Response) => {
       throw new Error("Dado inválido. Idade deve ser maior que 18 anos!");
     }
 
+    let id = 0;
+    let idAntigo;
+    let sum = 1;
+
+    for (let i = 0; i < clientes.length; i++) {
+      if (clientes[i].id !== id) {
+        idAntigo = Number(clientes[i].id);
+        id = idAntigo += sum;
+      }
+    }
+
     const NewUser: Conta = {
+      id,
       nome,
       cpf,
       nascimento,
@@ -122,6 +136,31 @@ app.put("/users/addsaldo", (req: Request, res: Response) => {
   }
 });
 
+app.delete("/users/:id", (req: Request, res: Response) => {
+  const contaId = req.params.id;
+  let error = 400;
+
+  try {
+    if (contaId === ":id") {
+      error = 422;
+      throw new Error(
+        "É necessário adicionar o id da conta bancária que deseja deletar."
+      );
+    }
+
+    const idExiste = clientes.filter((item) => item.id === contaId);
+    if (idExiste.length === 0) {
+      error = 404;
+      throw new Error("O id da conta bancária não existe.");
+    }
+
+    const contasNaoApagadas = clientes.filter((item) => item.id !== contaId);
+    res.status(201).send(contasNaoApagadas);
+  } catch (err: any) {
+    res.status(error).send(err.message);
+  }
+});
+
 app.listen(3003, () => {
-  console.log("Server is running in http://localhost:3003");
+  console.log("server is running in http://localhost:3003");
 });
