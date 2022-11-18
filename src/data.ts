@@ -1,4 +1,5 @@
 export type Conta = {
+  id: number | string;
   nome: string;
   cpf: string;
   nascimento: string;
@@ -14,6 +15,7 @@ export type Extrato = {
 
 export const clientes: Conta[] = [
   {
+    id: 1,
     nome: "Teste1",
     cpf: "111111111-11",
     nascimento: "",
@@ -27,6 +29,7 @@ export const clientes: Conta[] = [
     ],
   },
   {
+    id: 2,
     nome: "Teste2",
     cpf: "222222222-22",
     nascimento: "",
@@ -40,6 +43,7 @@ export const clientes: Conta[] = [
     ],
   },
   {
+    id: 3,
     nome: "Teste3",
     cpf: "333.333.333-33",
     nascimento: "",
